@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -45,7 +46,11 @@ public class Event {
     @Min(value = 1, message = "Capacity must be at least 1")
     private Integer capacity;
 
-    private int rsvpCount = 0;
+    // Not persisted - always populated from the real count of Booking rows
+    // (see EventService), so this can never drift into showing a stale or
+    // fabricated number of attendees.
+    @Transient
+    private int bookingCount = 0;
 
     public Event() {
     }
@@ -114,19 +119,19 @@ public class Event {
         this.capacity = capacity;
     }
 
-    public int getRsvpCount() {
-        return rsvpCount;
+    public int getBookingCount() {
+        return bookingCount;
     }
 
-    public void setRsvpCount(int rsvpCount) {
-        this.rsvpCount = rsvpCount;
+    public void setBookingCount(int bookingCount) {
+        this.bookingCount = bookingCount;
     }
 
     public boolean isFull() {
-        return capacity != null && rsvpCount >= capacity;
+        return capacity != null && bookingCount >= capacity;
     }
 
     public int getSpotsRemaining() {
-        return capacity == null ? 0 : Math.max(0, capacity - rsvpCount);
+        return capacity == null ? 0 : Math.max(0, capacity - bookingCount);
     }
 }

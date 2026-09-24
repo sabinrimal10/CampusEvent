@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div id="main-content" class="auth-shell">
+    <main class="auth-card">
+        <p class="auth-brand"><span class="logo-mark" aria-hidden="true">CE</span> CampusEvents</p>
+        <h1>Welcome back</h1>
+        <p class="auth-hint">Log in to browse events and book your spot.</p>
+
+        <p role="alert" class="alert alert-error" th:if="${param.error}">
+            Incorrect username or password.
+        </p>
+        <p role="status" class="alert alert-success" th:if="${param.registered}">
+            Account created &mdash; log in below.
+        </p>
+        <p role="status" class="alert alert-success" th:if="${param.logout}">
+            You've been logged out.
+        </p>
+
+        <form th:action="@{/login}" method="post" class="auth-form">
+            <div class="form-row">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" autocomplete="username" required>
+            </div>
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Log in</button>
+            </div>
+        </form>
+
+        <p class="auth-switch">New here? <a th:href="@{/signup}">Create an account</a></p>
+    </main>
+</div>
+</body>
+</html>

@@ -12,6 +12,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByOrderByStartTimeAsc();
 
+    long countByCategoryIgnoreCase(String category);
+
     @Query("SELECT DISTINCT e.category FROM Event e ORDER BY e.category")
     List<String> findDistinctCategories();
 }

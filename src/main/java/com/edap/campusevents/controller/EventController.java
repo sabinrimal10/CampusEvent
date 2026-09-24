@@ -1,13 +1,14 @@
 package com.edap.campusevents.controller;
 
+import com.edap.campusevents.exception.AlreadyBookedException;
 import com.edap.campusevents.exception.EventFullException;
 import com.edap.campusevents.exception.EventNotFoundException;
 import com.edap.campusevents.model.Event;
-import com.edap.campusevents.repository.EventRepository;
 import com.edap.campusevents.service.EventService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,18 +21,19 @@ import org.springframework.web.servlet.view.RedirectView;
 public class EventController {
 
     private final EventService eventService;
-    private final EventRepository eventRepository;
 
-    public EventController(EventService eventService, EventRepository eventRepository) {
+    public EventController(EventService eventService) {
         this.eventService = eventService;
-        this.eventRepository = eventRepository;
     }
 
     @GetMapping
-    public String list(@RequestParam(required = false) String category, Model model) {
+    public String list(@RequestParam(required = false) String category, Model model, Authentication authentication) {
         model.addAttribute("events", eventService.findAll(category));
-        model.addAttribute("categories", eventRepository.findDistinctCategories());
+        model.addAttribute("categories", eventService.findDistinctCategories());
+        model.addAttribute("categoryCounts", eventService.countsByCategory());
+        model.addAttribute("totalEventCount", eventService.countAll());
         model.addAttribute("selectedCategory", category);
+        model.addAttribute("currentUsername", authentication.getName());
         return "events/list";
     }
 
@@ -60,8 +62,9 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, Model model, Authentication authentication) {
         model.addAttribute("event", eventService.findById(id));
+        model.addAttribute("alreadyBooked", eventService.hasUserBooked(id, authentication.getName()));
         return "events/detail";
     }
 
@@ -95,14 +98,22 @@ public class EventController {
         return seeOther("/events");
     }
 
-    @PostMapping("/{id}/rsvp")
-    public ModelAndView rsvp(@PathVariable Long id, Model model, HttpServletResponse response) {
+    @PostMapping("/{id}/book")
+    public ModelAndView book(@PathVariable Long id, Model model, HttpServletResponse response,
+                              Authentication authentication) {
         try {
-            eventService.rsvp(id);
+            eventService.book(id, authentication.getName());
             return seeOther("/events/" + id);
         } catch (EventFullException e) {
             model.addAttribute("event", eventService.findById(id));
-            model.addAttribute("rsvpError", "Sorry, this event is full.");
+            model.addAttribute("alreadyBooked", false);
+            model.addAttribute("bookingError", "Sorry, this event is full.");
+            response.setStatus(HttpStatus.CONFLICT.value());
+            return new ModelAndView("events/detail");
+        } catch (AlreadyBookedException e) {
+            model.addAttribute("event", eventService.findById(id));
+            model.addAttribute("alreadyBooked", true);
+            model.addAttribute("bookingError", "You've already booked this event.");
             response.setStatus(HttpStatus.CONFLICT.value());
             return new ModelAndView("events/detail");
         }

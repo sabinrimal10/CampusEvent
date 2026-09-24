@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin panel - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<main id="main-content" class="admin-main">
+    <header class="admin-header">
+        <div>
+            <span class="admin-badge">Admin only</span>
+            <h1>Admin panel</h1>
+            <p class="admin-summary">Manage events and monitor bookings across CampusEvents.</p>
+        </div>
+        <div class="admin-actions">
+            <a class="btn btn-primary" th:href="@{/events/new}">+ New event</a>
+            <a class="btn" th:href="@{/events}">View public site</a>
+        </div>
+    </header>
+
+    <section class="stat-grid" aria-label="Overview stats"
+              th:with="totalBookings=${#lists.isEmpty(events)} ? 0 : ${#aggregates.sum(events.![bookingCount])}">
+        <div class="stat-card">
+            <p class="stat-value" th:text="${#lists.size(events)}">0</p>
+            <p class="stat-label">Events</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-value" th:text="${totalBookings}">0</p>
+            <p class="stat-label">Bookings</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-value" th:text="${userCount}">0</p>
+            <p class="stat-label">Registered accounts</p>
+        </div>
+    </section>
+
+    <h2 class="admin-section-title">Events</h2>
+
+    <p th:if="${#lists.isEmpty(events)}" class="empty-state">
+        No events yet. <a th:href="@{/events/new}">Create the first one.</a>
+    </p>
+
+    <section class="event-grid" aria-label="Manage events">
+        <article class="event-card" th:each="event : ${events}">
+            <span class="full-badge" th:if="${event.isFull()}">Full</span>
+            <p class="event-category" th:text="${event.category}">Category</p>
+            <h2><a th:href="@{/events/{id}(id=${event.id})}" th:text="${event.title}">Event title</a></h2>
+            <p class="event-meta">
+                <time th:text="${#temporals.format(event.startTime, 'EEE, d MMM yyyy - h:mm a')}"
+                      th:datetime="${event.startTime}">Date</time>
+            </p>
+            <p class="event-spots"
+               th:classappend="${event.isFull()} ? 'full' : (${event.spotsRemaining <= 2} ? 'low' : '')"
+               th:text="${event.bookingCount} + ' / ' + ${event.capacity} + ' booked'">0 / 0 booked</p>
+            <a class="attendees-link" th:href="@{/admin/events/{id}/attendees(id=${event.id})}">View attendees</a>
+            <div class="admin-row-actions">
+                <a class="btn" th:href="@{/events/{id}/edit(id=${event.id})}">Edit</a>
+                <form th:action="@{/events/{id}(id=${event.id})}" method="post"
+                      onsubmit="return confirm('Cancel this event? This cannot be undone.');">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="btn btn-danger">Cancel</button>
+                </form>
+            </div>
+        </article>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <p>CampusEvents &mdash; built for CTEC2712</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div id="main-content" class="auth-shell">
+    <main class="auth-card">
+        <p class="auth-brand"><span class="logo-mark" aria-hidden="true">CE</span> CampusEvents</p>
+        <h1>Create an account</h1>
+        <p class="auth-hint">New accounts can browse events and book their spot. Only admins can create or manage events.</p>
+
+    <form th:action="@{/signup}" th:object="${signupForm}" method="post" class="auth-form" novalidate>
+        <div class="form-row">
+            <label for="username">Username</label>
+            <input id="username" type="text" th:field="*{username}"
+                   th:attr="aria-describedby=${#fields.hasErrors('username')} ? 'username-error'">
+            <p id="username-error" class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</p>
+        </div>
+        <div class="form-row">
+            <label for="password">Password</label>
+            <input id="password" type="password" th:field="*{password}"
+                   th:attr="aria-describedby=${#fields.hasErrors('password')} ? 'password-error'">
+            <p id="password-error" class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</p>
+        </div>
+        <div class="form-row">
+            <label for="confirmPassword">Confirm password</label>
+            <input id="confirmPassword" type="password" th:field="*{confirmPassword}"
+                   th:attr="aria-describedby=${#fields.hasErrors('confirmPassword')} ? 'confirmPassword-error'">
+            <p id="confirmPassword-error" class="field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Error</p>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Sign up</button>
+        </div>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a th:href="@{/login}">Log in</a></p>
+    </main>
+</div>
+</body>
+</html>

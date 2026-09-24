@@ -9,65 +9,97 @@
 <body>
 <div th:replace="~{fragments/nav :: nav}"></div>
 
-<main class="form-main">
-    <h1 th:text="${isEdit} ? 'Edit event' : 'Create a new event'">Event form</h1>
+<main id="main-content" class="form-main">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a th:if="${isEdit}" th:href="@{/events/{id}(id=${event.id})}">&larr; Back to event</a>
+        <a th:unless="${isEdit}" th:href="@{/events}">&larr; Back to all events</a>
+    </nav>
 
-    <form th:action="${formAction}" th:object="${event}" method="post" novalidate>
-        <input th:if="${isEdit}" type="hidden" name="_method" value="put">
+    <div class="form-card">
+        <header class="form-card-header">
+            <span class="admin-badge">Admin only</span>
+            <h1 th:text="${isEdit} ? 'Edit event' : 'Create a new event'">Event form</h1>
+            <p class="form-card-subtitle"
+               th:text="${isEdit} ? 'Update the details below and save your changes.' : 'Fill in the details below to publish a new event.'">
+                Subtitle
+            </p>
+        </header>
 
-        <div class="form-row">
-            <label for="title">Title</label>
-            <input id="title" type="text" th:field="*{title}">
-            <p class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</p>
-        </div>
+        <form th:action="${formAction}" th:object="${event}" method="post" novalidate>
+            <input th:if="${isEdit}" type="hidden" name="_method" value="put">
 
-        <div class="form-row">
-            <label for="category">Category</label>
-            <input id="category" type="text" list="category-options" th:field="*{category}">
-            <datalist id="category-options">
-                <option value="Study Group"></option>
-                <option value="Social"></option>
-                <option value="Workshop"></option>
-                <option value="Sports"></option>
-            </datalist>
-            <p class="field-error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Error</p>
-        </div>
+            <fieldset class="form-fieldset">
+                <legend>Event details</legend>
 
-        <div class="form-row">
-            <label for="description">Description</label>
-            <textarea id="description" rows="5" th:field="*{description}"></textarea>
-            <p class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</p>
-        </div>
+                <div class="form-row">
+                    <label for="title">Title</label>
+                    <input id="title" type="text" placeholder="e.g. Intro to Git Workshop" th:field="*{title}"
+                           th:attr="aria-describedby=${#fields.hasErrors('title')} ? 'title-error'">
+                    <p id="title-error" class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</p>
+                </div>
 
-        <div class="form-row">
-            <label for="location">Location</label>
-            <input id="location" type="text" th:field="*{location}">
-            <p class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}">Error</p>
-        </div>
+                <div class="form-row">
+                    <label for="category">Category</label>
+                    <input id="category" type="text" list="category-options" placeholder="e.g. Workshop" th:field="*{category}"
+                           th:attr="aria-describedby=${#fields.hasErrors('category')} ? 'category-error'">
+                    <datalist id="category-options">
+                        <option value="Study Group"></option>
+                        <option value="Social"></option>
+                        <option value="Workshop"></option>
+                        <option value="Sports"></option>
+                    </datalist>
+                    <p id="category-error" class="field-error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Error</p>
+                </div>
 
-        <div class="form-row">
-            <label for="organizerName">Organizer name</label>
-            <input id="organizerName" type="text" th:field="*{organizerName}">
-            <p class="field-error" th:if="${#fields.hasErrors('organizerName')}" th:errors="*{organizerName}">Error</p>
-        </div>
+                <div class="form-row">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="5" placeholder="What should attendees know before they book?"
+                              th:field="*{description}"
+                              th:attr="aria-describedby=${#fields.hasErrors('description')} ? 'description-error'"></textarea>
+                    <p id="description-error" class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</p>
+                </div>
+            </fieldset>
 
-        <div class="form-row">
-            <label for="startTime">Start time</label>
-            <input id="startTime" type="datetime-local" th:field="*{startTime}">
-            <p class="field-error" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">Error</p>
-        </div>
+            <fieldset class="form-fieldset">
+                <legend>Logistics</legend>
 
-        <div class="form-row">
-            <label for="capacity">Capacity</label>
-            <input id="capacity" type="number" min="1" th:field="*{capacity}">
-            <p class="field-error" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">Error</p>
-        </div>
+                <div class="form-row">
+                    <label for="location">Location</label>
+                    <input id="location" type="text" placeholder="e.g. Library, Room 2.14" th:field="*{location}"
+                           th:attr="aria-describedby=${#fields.hasErrors('location')} ? 'location-error'">
+                    <p id="location-error" class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}">Error</p>
+                </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Save changes' : 'Create event'">Submit</button>
-            <a class="btn" th:href="${isEdit} ? '/events/' + *{id} : '/events'">Cancel</a>
-        </div>
-    </form>
+                <div class="form-row">
+                    <label for="organizerName">Organizer name</label>
+                    <input id="organizerName" type="text" placeholder="e.g. Dev Society" th:field="*{organizerName}"
+                           th:attr="aria-describedby=${#fields.hasErrors('organizerName')} ? 'organizerName-error'">
+                    <p id="organizerName-error" class="field-error" th:if="${#fields.hasErrors('organizerName')}" th:errors="*{organizerName}">Error</p>
+                </div>
+
+                <div class="form-row-group">
+                    <div class="form-row">
+                        <label for="startTime">Start time</label>
+                        <input id="startTime" type="datetime-local" th:field="*{startTime}"
+                               th:attr="aria-describedby=${#fields.hasErrors('startTime')} ? 'startTime-error'">
+                        <p id="startTime-error" class="field-error" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">Error</p>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="capacity">Capacity</label>
+                        <input id="capacity" type="number" min="1" placeholder="e.g. 25" th:field="*{capacity}"
+                               th:attr="aria-describedby=${#fields.hasErrors('capacity')} ? 'capacity-error'">
+                        <p id="capacity-error" class="field-error" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">Error</p>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="form-actions">
+                <a class="btn" th:href="${isEdit} ? '/events/' + *{id} : '/events'">Cancel</a>
+                <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Save changes' : 'Create event'">Submit</button>
+            </div>
+        </form>
+    </div>
 </main>
 
 <footer class="site-footer">

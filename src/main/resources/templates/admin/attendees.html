@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Attendees - ' + ${event.title} + ' - CampusEvents'">Attendees - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<main id="main-content" class="admin-main">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a th:href="@{/admin}">&larr; Back to admin panel</a>
+    </nav>
+
+    <header class="admin-header">
+        <div>
+            <span class="admin-badge">Admin only</span>
+            <h1 th:text="${event.title}">Event title</h1>
+            <p class="admin-summary">
+                <span th:text="${event.bookingCount}">0</span> / <span th:text="${event.capacity}">0</span> spots booked
+            </p>
+        </div>
+    </header>
+
+    <p th:if="${#lists.isEmpty(bookings)}" class="empty-state">
+        No one has booked this event yet.
+    </p>
+
+    <div class="data-table-wrap" th:unless="${#lists.isEmpty(bookings)}">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Booked at</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="booking, iter : ${bookings}">
+                    <td th:text="${iter.count}">1</td>
+                    <td>
+                        <span class="attendee-name">
+                            <span class="nav-avatar" aria-hidden="true"
+                                  th:text="${#strings.substring(booking.user.username, 0, 1)}">U</span>
+                            <span th:text="${booking.user.username}">username</span>
+                        </span>
+                    </td>
+                    <td th:text="${#temporals.format(booking.bookedAt, 'd MMM yyyy, h:mm a')}">Date</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <p>CampusEvents &mdash; built for CTEC2712</p>
+</footer>
+</body>
+</html>

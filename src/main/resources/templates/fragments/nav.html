@@ -1,12 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <header th:fragment="nav" class="site-header">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav class="site-nav" aria-label="Main navigation">
-        <a class="brand" th:href="@{/events}">CampusEvents</a>
+        <a class="brand" th:href="@{/events}">
+            <span class="logo-mark" aria-hidden="true">CE</span>
+            CampusEvents
+        </a>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox">
+        <label for="nav-toggle" class="nav-toggle-label" role="button" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+        </label>
         <ul>
             <li><a th:href="@{/events}">Browse events</a></li>
-            <li><a th:href="@{/events/new}" class="btn-inline">+ New event</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Admin panel</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/events/new}" class="btn-inline">+ New event</a></li>
+            <li class="nav-user">
+                <span class="nav-avatar" aria-hidden="true" th:text="${#strings.substring(#authentication.name, 0, 1)}">U</span>
+                <span class="nav-user-info">
+                    <span class="nav-username" sec:authentication="name">username</span>
+                    <form th:action="@{/logout}" method="post" class="logout-form">
+                        <button type="submit" class="link-button">Log out</button>
+                    </form>
+                </span>
+            </li>
         </ul>
     </nav>
 </header>

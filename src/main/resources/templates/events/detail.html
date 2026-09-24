@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +9,29 @@
 <body>
 <div th:replace="~{fragments/nav :: nav}"></div>
 
-<main class="detail-main">
+<main id="main-content" class="detail-main">
     <nav aria-label="Breadcrumb" class="breadcrumb">
         <a th:href="@{/events}">&larr; Back to all events</a>
     </nav>
 
-    <article class="event-detail">
-        <header>
-            <p class="event-category" th:text="${event.category}">Category</p>
-            <h1 th:text="${event.title}">Event title</h1>
+    <article class="event-detail-card">
+        <header class="event-detail-header">
+            <div class="event-detail-heading">
+                <span class="full-badge event-detail-full-badge" th:if="${event.isFull()}">Full</span>
+                <p class="event-category" th:text="${event.category}">Category</p>
+                <h1 th:text="${event.title}">Event title</h1>
+            </div>
+            <p class="event-host">
+                <span class="nav-avatar" aria-hidden="true"
+                      th:text="${#strings.substring(event.organizerName, 0, 1)}">O</span>
+                Hosted by <span th:text="${event.organizerName}">Organizer</span>
+            </p>
         </header>
 
-        <p role="alert" class="alert alert-error" th:if="${rsvpError}" th:text="${rsvpError}">Error</p>
+        <p role="alert" class="alert alert-error" th:if="${bookingError}" th:text="${bookingError}">Error</p>
+        <p role="status" class="alert alert-success" th:if="${alreadyBooked and bookingError == null}">
+            You're booked for this event.
+        </p>
 
         <dl class="event-facts">
             <dt>When</dt>
@@ -32,27 +43,35 @@
             <dt>Where</dt>
             <dd th:text="${event.location}">Location</dd>
 
-            <dt>Organizer</dt>
-            <dd th:text="${event.organizerName}">Organizer</dd>
-
             <dt>Capacity</dt>
-            <dd th:text="${event.rsvpCount} + ' / ' + ${event.capacity} + ' attending'">0 / 0</dd>
+            <dd>
+                <div class="capacity-meter">
+                    <div class="capacity-bar" role="progressbar"
+                         th:aria-valuenow="${event.bookingCount}" th:aria-valuemax="${event.capacity}">
+                        <div class="capacity-bar-fill"
+                             th:classappend="${event.isFull()} ? 'full' : (${event.spotsRemaining <= 2} ? 'low' : '')"
+                             th:style="'width: ' + ${event.bookingCount * 100.0 / event.capacity} + '%'"></div>
+                    </div>
+                    <span id="capacity-display" th:text="${event.bookingCount} + ' / ' + ${event.capacity} + ' booked'">0 / 0</span>
+                    <button type="button" id="refresh-capacity" class="btn-link">Refresh</button>
+                </div>
+            </dd>
         </dl>
 
-        <section aria-label="Description">
+        <section class="event-description" aria-label="Description">
             <h2>About this event</h2>
             <p th:text="${event.description}">Description</p>
         </section>
 
         <div class="action-bar">
-            <form th:action="@{/events/{id}/rsvp(id=${event.id})}" method="post">
-                <button type="submit" class="btn btn-primary" th:disabled="${event.isFull()}"
-                        th:text="${event.isFull()} ? 'Event full' : 'RSVP to this event'">RSVP</button>
+            <form th:action="@{/events/{id}/book(id=${event.id})}" method="post">
+                <button type="submit" class="btn btn-primary" th:disabled="${alreadyBooked or event.isFull()}"
+                        th:text="${alreadyBooked} ? 'You are booked' : (${event.isFull()} ? 'Event full' : 'Book this event')">Book</button>
             </form>
 
-            <a class="btn" th:href="@{/events/{id}/edit(id=${event.id})}">Edit event</a>
+            <a sec:authorize="hasRole('ADMIN')" class="btn" th:href="@{/events/{id}/edit(id=${event.id})}">Edit event</a>
 
-            <form th:action="@{/events/{id}(id=${event.id})}" method="post"
+            <form sec:authorize="hasRole('ADMIN')" th:action="@{/events/{id}(id=${event.id})}" method="post"
                   onsubmit="return confirm('Cancel this event? This cannot be undone.');">
                 <input type="hidden" name="_method" value="delete">
                 <button type="submit" class="btn btn-danger">Cancel event</button>
@@ -64,5 +83,31 @@
 <footer class="site-footer">
     <p>CampusEvents &mdash; built for CTEC2712</p>
 </footer>
+
+<script th:inline="javascript">
+    const eventId = /*[[${event.id}]]*/ 0;
+    const capacityDisplay = document.getElementById('capacity-display');
+    const refreshButton = document.getElementById('refresh-capacity');
+    const capacityFill = document.querySelector('.capacity-bar-fill');
+
+    refreshButton.addEventListener('click', () => {
+        refreshButton.disabled = true;
+        fetch(`/api/events/${eventId}`)
+            .then(response => response.json())
+            .then(event => {
+                capacityDisplay.textContent = `${event.bookingCount} / ${event.capacity} booked`;
+                const percent = (event.bookingCount * 100) / event.capacity;
+                capacityFill.style.width = `${percent}%`;
+                capacityFill.classList.toggle('full', event.full);
+                capacityFill.classList.toggle('low', !event.full && (event.capacity - event.bookingCount) <= 2);
+            })
+            .catch(() => {
+                capacityDisplay.textContent = 'Could not refresh capacity';
+            })
+            .finally(() => {
+                refreshButton.disabled = false;
+            });
+    });
+</script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,41 +9,102 @@
 <body>
 <div th:replace="~{fragments/nav :: nav}"></div>
 
+<div class="events-hero">
+    <div class="page-toolbar">
+        <div>
+            <p class="page-greeting">Welcome back, <span th:text="${currentUsername}">friend</span>.</p>
+            <h1>Upcoming events</h1>
+            <p class="page-subtitle">Discover what's happening on campus and book your spot in a click.</p>
+        </div>
+        <p class="events-count">
+            <span id="events-count-number" th:text="${#lists.size(events)}">0</span>
+            <span th:text="${#lists.size(events) == 1} ? 'event' : 'events'">events</span>
+            <span th:if="${selectedCategory}" th:text="'in ' + ${selectedCategory}"></span>
+        </p>
+    </div>
+
+    <div class="events-search-row">
+        <svg class="events-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="search" id="event-search" class="events-search-input"
+               placeholder="Search by title or location&hellip;" aria-label="Search events on this page">
+    </div>
+</div>
+
 <div class="page-layout">
     <aside class="filters" aria-label="Filter events by category">
         <h2>Filter by category</h2>
         <ul class="filter-list">
             <li>
-                <a th:href="@{/events}"
-                   th:classappend="${selectedCategory == null} ? 'active'"
-                   th:text="'All events'">All events</a>
+                <a th:href="@{/events}" class="filter-link"
+                   th:classappend="${selectedCategory == null} ? 'active'">
+                    <span class="filter-dot filter-dot-all"></span>
+                    <span class="filter-label">All events</span>
+                    <span class="filter-count" th:text="${totalEventCount}">0</span>
+                </a>
             </li>
             <li th:each="cat : ${categories}">
-                <a th:href="@{/events(category=${cat})}"
-                   th:classappend="${selectedCategory != null and #strings.equalsIgnoreCase(selectedCategory, cat)} ? 'active'"
-                   th:text="${cat}">Category</a>
+                <a th:href="@{/events(category=${cat})}" class="filter-link"
+                   th:classappend="${selectedCategory != null and #strings.equalsIgnoreCase(selectedCategory, cat)} ? 'active'">
+                    <span class="filter-dot"></span>
+                    <span class="filter-label" th:text="${cat}">Category</span>
+                    <span class="filter-count" th:text="${categoryCounts.get(cat)}">0</span>
+                </a>
             </li>
         </ul>
     </aside>
 
-    <main class="event-list-main">
-        <h1>Upcoming events</h1>
-
+    <main id="main-content" class="event-list-main">
         <p th:if="${#lists.isEmpty(events)}" class="empty-state">
-            No events found. <a th:href="@{/events/new}">Create the first one.</a>
+            No events found.
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/events/new}">Create the first one.</a>
+        </p>
+
+        <p id="no-search-matches" class="empty-state" hidden>
+            No events match your search.
         </p>
 
         <section class="event-grid" aria-label="Event list">
-            <article class="event-card" th:each="event : ${events}">
-                <p class="event-category" th:text="${event.category}">Category</p>
-                <h2><a th:href="@{/events/{id}(id=${event.id})}" th:text="${event.title}">Event title</a></h2>
+            <article class="event-card" th:each="event : ${events}"
+                      th:attr="data-search=${#strings.toLowerCase(event.title)} + ' ' + ${#strings.toLowerCase(event.location)}">
+                <span class="full-badge" th:if="${event.isFull()}">Full</span>
+
+                <div class="event-card-top">
+                    <div class="event-date-badge">
+                        <span class="event-date-month" th:text="${#temporals.format(event.startTime, 'MMM')}">Jan</span>
+                        <span class="event-date-day" th:text="${#temporals.format(event.startTime, 'd')}">1</span>
+                    </div>
+                    <div class="event-card-heading">
+                        <p class="event-category" th:text="${event.category}">Category</p>
+                        <h2><a th:href="@{/events/{id}(id=${event.id})}" th:text="${event.title}">Event title</a></h2>
+                    </div>
+                </div>
+
                 <p class="event-meta">
-                    <time th:text="${#temporals.format(event.startTime, 'EEE, d MMM yyyy - h:mm a')}"
-                          th:datetime="${event.startTime}">Date</time>
+                    <time th:text="${#temporals.format(event.startTime, 'h:mm a')}"
+                          th:datetime="${event.startTime}">Time</time>
                     &middot; <span th:text="${event.location}">Location</span>
                 </p>
-                <p class="event-spots"
-                   th:text="${event.isFull()} ? 'Full' : ${event.spotsRemaining} + ' spots left'">Spots</p>
+
+                <p class="event-host-mini">
+                    <span class="nav-avatar" aria-hidden="true"
+                          th:text="${#strings.substring(event.organizerName, 0, 1)}">O</span>
+                    <span th:text="${event.organizerName}">Organizer</span>
+                </p>
+
+                <div class="event-capacity-mini">
+                    <div class="capacity-bar">
+                        <div class="capacity-bar-fill"
+                             th:classappend="${event.isFull()} ? 'full' : (${event.spotsRemaining <= 2} ? 'low' : '')"
+                             th:style="'width: ' + ${event.bookingCount * 100.0 / event.capacity} + '%'"></div>
+                    </div>
+                    <p class="event-spots"
+                       th:classappend="${event.isFull()} ? 'full' : (${event.spotsRemaining <= 2} ? 'low' : '')"
+                       th:text="${event.isFull()} ? 'Full' : ${event.spotsRemaining} + ' spots left'">Spots</p>
+                </div>
+
                 <a class="btn" th:href="@{/events/{id}(id=${event.id})}">View details</a>
             </article>
         </section>
@@ -53,5 +114,26 @@
 <footer class="site-footer">
     <p>CampusEvents &mdash; built for CTEC2712</p>
 </footer>
+
+<script>
+    const searchInput = document.getElementById('event-search');
+    const cards = Array.from(document.querySelectorAll('.event-card'));
+    const noMatches = document.getElementById('no-search-matches');
+
+    if (searchInput && cards.length) {
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+            cards.forEach(card => {
+                const matches = card.dataset.search.includes(query);
+                card.style.display = matches ? '' : 'none';
+                if (matches) visibleCount += 1;
+            });
+            if (noMatches) {
+                noMatches.hidden = visibleCount !== 0;
+            }
+        });
+    }
+</script>
 </body>
 </html>

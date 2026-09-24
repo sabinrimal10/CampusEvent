@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Something went wrong - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<!-- Deliberately standalone (no nav fragment, no auth-dependent state) - this
+     is the last-resort page for unexpected failures, so it must render even
+     if something upstream is in a broken state. -->
+<div class="auth-shell">
+    <main id="main-content" class="auth-card" style="text-align:center;">
+        <p class="auth-brand" style="justify-content:center;">
+            <span class="logo-mark" aria-hidden="true">CE</span> CampusEvents
+        </p>
+        <p class="error-code" th:text="${status} ?: '500'">500</p>
+        <h1>Something went wrong</h1>
+        <p class="error-message">
+            An unexpected error occurred while handling your request<span th:if="${path}" th:text="' (' + ${path} + ')'"></span>.
+        </p>
+        <a class="btn btn-primary" href="/events">Back to events</a>
+    </main>
+</div>
+</body>
+</html>

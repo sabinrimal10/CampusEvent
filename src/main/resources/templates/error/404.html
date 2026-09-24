@@ -8,10 +8,11 @@
 <body>
 <div th:replace="~{fragments/nav :: nav}"></div>
 
-<main class="error-main">
-    <h1>404 &mdash; Event not found</h1>
-    <p th:text="${message}">We couldn't find that event.</p>
-    <a class="btn" th:href="@{/events}">Back to all events</a>
+<main id="main-content" class="error-main">
+    <p class="error-code">404</p>
+    <h1>Event not found</h1>
+    <p class="error-message" th:text="${message}">We couldn't find that event.</p>
+    <a class="btn btn-primary" th:href="@{/events}">Back to all events</a>
 </main>
 </body>
 </html>
