@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${event.title} + ' - CampusEvents'">Event - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<main class="detail-main">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a th:href="@{/events}">&larr; Back to all events</a>
+    </nav>
+
+    <article class="event-detail">
+        <header>
+            <p class="event-category" th:text="${event.category}">Category</p>
+            <h1 th:text="${event.title}">Event title</h1>
+        </header>
+
+        <p role="alert" class="alert alert-error" th:if="${rsvpError}" th:text="${rsvpError}">Error</p>
+
+        <dl class="event-facts">
+            <dt>When</dt>
+            <dd>
+                <time th:text="${#temporals.format(event.startTime, 'EEEE, d MMMM yyyy - h:mm a')}"
+                      th:datetime="${event.startTime}">Date</time>
+            </dd>
+
+            <dt>Where</dt>
+            <dd th:text="${event.location}">Location</dd>
+
+            <dt>Organizer</dt>
+            <dd th:text="${event.organizerName}">Organizer</dd>
+
+            <dt>Capacity</dt>
+            <dd th:text="${event.rsvpCount} + ' / ' + ${event.capacity} + ' attending'">0 / 0</dd>
+        </dl>
+
+        <section aria-label="Description">
+            <h2>About this event</h2>
+            <p th:text="${event.description}">Description</p>
+        </section>
+
+        <div class="action-bar">
+            <form th:action="@{/events/{id}/rsvp(id=${event.id})}" method="post">
+                <button type="submit" class="btn btn-primary" th:disabled="${event.isFull()}"
+                        th:text="${event.isFull()} ? 'Event full' : 'RSVP to this event'">RSVP</button>
+            </form>
+
+            <a class="btn" th:href="@{/events/{id}/edit(id=${event.id})}">Edit event</a>
+
+            <form th:action="@{/events/{id}(id=${event.id})}" method="post"
+                  onsubmit="return confirm('Cancel this event? This cannot be undone.');">
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="btn btn-danger">Cancel event</button>
+            </form>
+        </div>
+    </article>
+</main>
+
+<footer class="site-footer">
+    <p>CampusEvents &mdash; built for CTEC2712</p>
+</footer>
+</body>
+</html>

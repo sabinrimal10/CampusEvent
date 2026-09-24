@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Not found - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<main class="error-main">
+    <h1>404 &mdash; Event not found</h1>
+    <p th:text="${message}">We couldn't find that event.</p>
+    <a class="btn" th:href="@{/events}">Back to all events</a>
+</main>
+</body>
+</html>

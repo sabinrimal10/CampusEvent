@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Edit event - CampusEvents' : 'New event - CampusEvents'">Event form</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<main class="form-main">
+    <h1 th:text="${isEdit} ? 'Edit event' : 'Create a new event'">Event form</h1>
+
+    <form th:action="${formAction}" th:object="${event}" method="post" novalidate>
+        <input th:if="${isEdit}" type="hidden" name="_method" value="put">
+
+        <div class="form-row">
+            <label for="title">Title</label>
+            <input id="title" type="text" th:field="*{title}">
+            <p class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</p>
+        </div>
+
+        <div class="form-row">
+            <label for="category">Category</label>
+            <input id="category" type="text" list="category-options" th:field="*{category}">
+            <datalist id="category-options">
+                <option value="Study Group"></option>
+                <option value="Social"></option>
+                <option value="Workshop"></option>
+                <option value="Sports"></option>
+            </datalist>
+            <p class="field-error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Error</p>
+        </div>
+
+        <div class="form-row">
+            <label for="description">Description</label>
+            <textarea id="description" rows="5" th:field="*{description}"></textarea>
+            <p class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</p>
+        </div>
+
+        <div class="form-row">
+            <label for="location">Location</label>
+            <input id="location" type="text" th:field="*{location}">
+            <p class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}">Error</p>
+        </div>
+
+        <div class="form-row">
+            <label for="organizerName">Organizer name</label>
+            <input id="organizerName" type="text" th:field="*{organizerName}">
+            <p class="field-error" th:if="${#fields.hasErrors('organizerName')}" th:errors="*{organizerName}">Error</p>
+        </div>
+
+        <div class="form-row">
+            <label for="startTime">Start time</label>
+            <input id="startTime" type="datetime-local" th:field="*{startTime}">
+            <p class="field-error" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">Error</p>
+        </div>
+
+        <div class="form-row">
+            <label for="capacity">Capacity</label>
+            <input id="capacity" type="number" min="1" th:field="*{capacity}">
+            <p class="field-error" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">Error</p>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Save changes' : 'Create event'">Submit</button>
+            <a class="btn" th:href="${isEdit} ? '/events/' + *{id} : '/events'">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<footer class="site-footer">
+    <p>CampusEvents &mdash; built for CTEC2712</p>
+</footer>
+</body>
+</html>

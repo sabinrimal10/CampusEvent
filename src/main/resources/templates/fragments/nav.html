@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="nav" class="site-header">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a class="brand" th:href="@{/events}">CampusEvents</a>
+        <ul>
+            <li><a th:href="@{/events}">Browse events</a></li>
+            <li><a th:href="@{/events/new}" class="btn-inline">+ New event</a></li>
+        </ul>
+    </nav>
+</header>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse events - CampusEvents</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div class="page-layout">
+    <aside class="filters" aria-label="Filter events by category">
+        <h2>Filter by category</h2>
+        <ul class="filter-list">
+            <li>
+                <a th:href="@{/events}"
+                   th:classappend="${selectedCategory == null} ? 'active'"
+                   th:text="'All events'">All events</a>
+            </li>
+            <li th:each="cat : ${categories}">
+                <a th:href="@{/events(category=${cat})}"
+                   th:classappend="${selectedCategory != null and #strings.equalsIgnoreCase(selectedCategory, cat)} ? 'active'"
+                   th:text="${cat}">Category</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="event-list-main">
+        <h1>Upcoming events</h1>
+
+        <p th:if="${#lists.isEmpty(events)}" class="empty-state">
+            No events found. <a th:href="@{/events/new}">Create the first one.</a>
+        </p>
+
+        <section class="event-grid" aria-label="Event list">
+            <article class="event-card" th:each="event : ${events}">
+                <p class="event-category" th:text="${event.category}">Category</p>
+                <h2><a th:href="@{/events/{id}(id=${event.id})}" th:text="${event.title}">Event title</a></h2>
+                <p class="event-meta">
+                    <time th:text="${#temporals.format(event.startTime, 'EEE, d MMM yyyy - h:mm a')}"
+                          th:datetime="${event.startTime}">Date</time>
+                    &middot; <span th:text="${event.location}">Location</span>
+                </p>
+                <p class="event-spots"
+                   th:text="${event.isFull()} ? 'Full' : ${event.spotsRemaining} + ' spots left'">Spots</p>
+                <a class="btn" th:href="@{/events/{id}(id=${event.id})}">View details</a>
+            </article>
+        </section>
+    </main>
+</div>
+
+<footer class="site-footer">
+    <p>CampusEvents &mdash; built for CTEC2712</p>
+</footer>
+</body>
+</html>
