@@ -1,8 +1,8 @@
-package com.edap.campusevents.repository;
+package com.campusevents.repository;
 
-import com.edap.campusevents.model.AppUser;
-import com.edap.campusevents.model.Booking;
-import com.edap.campusevents.model.Event;
+import com.campusevents.model.AppUser;
+import com.campusevents.model.Booking;
+import com.campusevents.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

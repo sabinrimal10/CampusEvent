@@ -1,4 +1,4 @@
-package com.edap.campusevents.dto;
+package com.campusevents.dto;
 
 import java.time.LocalDateTime;
 

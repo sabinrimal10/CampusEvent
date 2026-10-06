@@ -1,7 +1,7 @@
-package com.edap.campusevents.security;
+package com.campusevents.security;
 
-import com.edap.campusevents.model.AppUser;
-import com.edap.campusevents.repository.UserRepository;
+import com.campusevents.model.AppUser;
+import com.campusevents.repository.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

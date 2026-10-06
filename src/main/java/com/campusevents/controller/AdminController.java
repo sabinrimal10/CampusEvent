@@ -1,8 +1,8 @@
-package com.edap.campusevents.controller;
+package com.campusevents.controller;
 
-import com.edap.campusevents.repository.BookingRepository;
-import com.edap.campusevents.repository.UserRepository;
-import com.edap.campusevents.service.EventService;
+import com.campusevents.repository.BookingRepository;
+import com.campusevents.repository.UserRepository;
+import com.campusevents.service.EventService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

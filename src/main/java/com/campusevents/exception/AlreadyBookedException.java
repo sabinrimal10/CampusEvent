@@ -1,4 +1,4 @@
-package com.edap.campusevents.exception;
+package com.campusevents.exception;
 
 public class AlreadyBookedException extends RuntimeException {
 

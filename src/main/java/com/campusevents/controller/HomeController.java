@@ -1,4 +1,4 @@
-package com.edap.campusevents.controller;
+package com.campusevents.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

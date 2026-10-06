@@ -1,4 +1,4 @@
-package com.edap.campusevents.security;
+package com.campusevents.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,8 +1,8 @@
-package com.edap.campusevents.config;
+package com.campusevents.config;
 
-import com.edap.campusevents.security.StableCsrfTokenRepository;
-import com.edap.campusevents.security.jwt.JwtAuthenticationFilter;
-import com.edap.campusevents.security.jwt.JwtService;
+import com.campusevents.security.StableCsrfTokenRepository;
+import com.campusevents.security.jwt.JwtAuthenticationFilter;
+import com.campusevents.security.jwt.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;

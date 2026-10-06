@@ -1,10 +1,10 @@
-package com.edap.campusevents.controller;
+package com.campusevents.controller;
 
-import com.edap.campusevents.exception.AlreadyBookedException;
-import com.edap.campusevents.exception.EventFullException;
-import com.edap.campusevents.exception.EventNotFoundException;
-import com.edap.campusevents.model.Event;
-import com.edap.campusevents.service.EventService;
+import com.campusevents.exception.AlreadyBookedException;
+import com.campusevents.exception.EventFullException;
+import com.campusevents.exception.EventNotFoundException;
+import com.campusevents.model.Event;
+import com.campusevents.service.EventService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

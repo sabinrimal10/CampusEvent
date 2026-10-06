@@ -1,10 +1,10 @@
-package com.edap.campusevents.config;
+package com.campusevents.config;
 
-import com.edap.campusevents.model.AppUser;
-import com.edap.campusevents.model.Event;
-import com.edap.campusevents.model.Role;
-import com.edap.campusevents.repository.EventRepository;
-import com.edap.campusevents.repository.UserRepository;
+import com.campusevents.model.AppUser;
+import com.campusevents.model.Event;
+import com.campusevents.model.Role;
+import com.campusevents.repository.EventRepository;
+import com.campusevents.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

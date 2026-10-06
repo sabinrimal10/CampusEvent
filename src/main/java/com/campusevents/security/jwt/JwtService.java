@@ -1,4 +1,4 @@
-package com.edap.campusevents.security.jwt;
+package com.campusevents.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

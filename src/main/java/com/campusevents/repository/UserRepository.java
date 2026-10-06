@@ -1,6 +1,6 @@
-package com.edap.campusevents.repository;
+package com.campusevents.repository;
 
-import com.edap.campusevents.model.AppUser;
+import com.campusevents.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,14 +1,14 @@
-package com.edap.campusevents.service;
+package com.campusevents.service;
 
-import com.edap.campusevents.exception.AlreadyBookedException;
-import com.edap.campusevents.exception.EventFullException;
-import com.edap.campusevents.exception.EventNotFoundException;
-import com.edap.campusevents.model.AppUser;
-import com.edap.campusevents.model.Booking;
-import com.edap.campusevents.model.Event;
-import com.edap.campusevents.repository.BookingRepository;
-import com.edap.campusevents.repository.EventRepository;
-import com.edap.campusevents.repository.UserRepository;
+import com.campusevents.exception.AlreadyBookedException;
+import com.campusevents.exception.EventFullException;
+import com.campusevents.exception.EventNotFoundException;
+import com.campusevents.model.AppUser;
+import com.campusevents.model.Booking;
+import com.campusevents.model.Event;
+import com.campusevents.repository.BookingRepository;
+import com.campusevents.repository.EventRepository;
+import com.campusevents.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;

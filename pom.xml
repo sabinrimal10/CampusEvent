@@ -8,7 +8,7 @@
 		<version>4.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.edap.campusevents</groupId>
+	<groupId>com.campusevents</groupId>
 	<artifactId>campusevents</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>campusevents</name>

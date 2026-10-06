@@ -1,4 +1,4 @@
-package com.edap.campusevents.exception;
+package com.campusevents.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

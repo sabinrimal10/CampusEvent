@@ -1,10 +1,10 @@
-package com.edap.campusevents.controller;
+package com.campusevents.controller;
 
-import com.edap.campusevents.dto.SignupForm;
-import com.edap.campusevents.model.AppUser;
-import com.edap.campusevents.model.Role;
-import com.edap.campusevents.repository.UserRepository;
-import com.edap.campusevents.security.jwt.JwtService;
+import com.campusevents.dto.SignupForm;
+import com.campusevents.model.AppUser;
+import com.campusevents.model.Role;
+import com.campusevents.repository.UserRepository;
+import com.campusevents.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;

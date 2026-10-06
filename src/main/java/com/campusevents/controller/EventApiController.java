@@ -1,9 +1,9 @@
-package com.edap.campusevents.controller;
+package com.campusevents.controller;
 
-import com.edap.campusevents.dto.AttendeeView;
-import com.edap.campusevents.model.Event;
-import com.edap.campusevents.repository.BookingRepository;
-import com.edap.campusevents.service.EventService;
+import com.campusevents.dto.AttendeeView;
+import com.campusevents.model.Event;
+import com.campusevents.repository.BookingRepository;
+import com.campusevents.service.EventService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

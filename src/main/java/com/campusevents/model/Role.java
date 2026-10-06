@@ -1,4 +1,4 @@
-package com.edap.campusevents.model;
+package com.campusevents.model;
 
 public enum Role {
     USER,
