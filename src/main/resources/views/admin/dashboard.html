@@ -59,15 +59,14 @@
             <a class="attendees-link" th:href="@{/admin/events/{id}/attendees(id=${event.id})}">View attendees</a>
             <div class="admin-row-actions">
                 <a class="btn" th:href="@{/events/{id}/edit(id=${event.id})}">Edit</a>
-                <form th:action="@{/events/{id}(id=${event.id})}" method="post"
-                      onsubmit="return confirm('Cancel this event? This cannot be undone.');">
-                    <input type="hidden" name="_method" value="delete">
-                    <button type="submit" class="btn btn-danger">Cancel</button>
-                </form>
+                <button type="button" class="btn btn-danger"
+                        th:attr="data-delete-url=@{/events/{id}(id=${event.id})},data-delete-title=${event.title}">Delete</button>
             </div>
         </article>
     </section>
 </main>
+
+<th:block th:replace="~{fragments/delete-modal :: modal}"></th:block>
 
 <footer class="site-footer">
     <p>CampusEvents &mdash; built for CTEC2712</p>

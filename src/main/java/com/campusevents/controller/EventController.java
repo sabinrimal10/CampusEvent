@@ -95,7 +95,8 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ModelAndView cancel(@PathVariable Long id) {
         eventService.cancel(id);
-        return seeOther("/events");
+        // Only admins can delete, so send them back to the admin panel
+        return seeOther("/admin");
     }
 
     @PostMapping("/{id}/book")

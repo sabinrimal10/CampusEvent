@@ -10,6 +10,7 @@ import com.campusevents.repository.BookingRepository;
 import com.campusevents.repository.EventRepository;
 import com.campusevents.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -77,8 +78,11 @@ public class EventService {
         return eventRepository.save(existing);
     }
 
+    @Transactional
     public void cancel(Long id) {
         Event existing = findById(id);
+        // Bookings reference the event, so remove them first or the delete violates the FK.
+        bookingRepository.deleteAll(bookingRepository.findByEventId(id));
         eventRepository.delete(existing);
     }
 

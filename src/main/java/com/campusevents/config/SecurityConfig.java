@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/login", "/signup", "/h2-console/**").permitAll()
+                        .requestMatchers("/css/**", "/login", "/signup", "/error", "/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/events/new", "/events/*/edit").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/events/*").hasRole("ADMIN")

@@ -1371,3 +1371,17 @@ a:hover {
         display: inline;
     }
 }
+
+/* Delete confirmation modal */
+.confirm-modal {
+    border: none;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 24rem;
+    width: calc(100% - 2rem);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+.confirm-modal::backdrop { background: rgba(0, 0, 0, 0.5); }
+.confirm-modal h2 { margin: 0 0 0.5rem; font-size: 1.15rem; }
+.confirm-modal p { margin: 0 0 1.25rem; }
+.confirm-modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }

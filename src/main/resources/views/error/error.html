@@ -20,7 +20,7 @@
         <p class="error-message">
             An unexpected error occurred while handling your request<span th:if="${path}" th:text="' (' + ${path} + ')'"></span>.
         </p>
-        <a class="btn btn-primary" href="/events">Back to events</a>
+        <a class="btn btn-primary" th:href="@{/events}">Back to events</a>
     </main>
 </div>
 </body>
